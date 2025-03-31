@@ -34,34 +34,46 @@ pipeline {
         
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t gestion-tareas-api:%BUILD_NUMBER% .'
-                bat 'docker tag gestion-tareas-api:%BUILD_NUMBER% gestion-tareas-api:latest'
+                // Usando el plugin Docker para construir la imagen
+                script {
+                    def customImage = docker.build("gestion-tareas-api:${env.BUILD_NUMBER}")
+                    // Etiquetar la imagen como latest
+                    customImage.tag('latest')
+                }
             }
         }
         
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Detener y eliminar contenedor existente si existe
-                    bat 'docker stop gestion-tareas-api || echo "No hay contenedor para detener"'
-                    bat 'docker rm gestion-tareas-api || echo "No hay contenedor para eliminar"'
+                    // Detener y eliminar el contenedor existente si existe
+                    bat '''
+                        docker stop gestion-tareas-api || echo "No hay contenedor para detener"
+                        docker rm gestion-tareas-api || echo "No hay contenedor para eliminar"
+                    '''
                     
-                    // Ejecutar el nuevo contenedor
-                    bat 'docker run -d -p 3000:3000 --name gestion-tareas-api gestion-tareas-api:%BUILD_NUMBER%'
+                    // Ejecutar el nuevo contenedor usando el plugin Docker
+                    docker.image("gestion-tareas-api:${env.BUILD_NUMBER}").run('-p 3000:3000 --name gestion-tareas-api')
+                    
+                    // Esperar a que el contenedor esté listo
+                    bat 'timeout /t 10'
                 }
             }
         }
         
         stage('Verify Docker Container') {
             steps {
-                // Esperar a que el contenedor esté listo
-                bat 'timeout /t 5'
-                
-                // Mostrar logs del contenedor
-                bat 'docker logs gestion-tareas-api'
-                
-                // Verificar el estado del contenedor
-                bat 'docker ps | findstr gestion-tareas-api'
+                script {
+                    // Verificar que el contenedor está en ejecución
+                    def containerRunning = bat(script: 'docker ps | findstr gestion-tareas-api', returnStatus: true) == 0
+                    
+                    if (!containerRunning) {
+                        error "El contenedor no está en ejecución"
+                    }
+                    
+                    // Mostrar logs del contenedor
+                    bat 'docker logs gestion-tareas-api'
+                }
             }
         }
     }
