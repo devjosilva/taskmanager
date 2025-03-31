@@ -10,13 +10,13 @@ pipeline {
         
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                bat 'npm install'
             }
         }
         
         stage('Run Tests') {
             steps {
-                sh 'npm test'
+                bat 'npm test'
             }
             post {
                 always {
@@ -27,8 +27,8 @@ pipeline {
         
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t task-api:${BUILD_NUMBER} .'
-                sh 'docker tag task-api:${BUILD_NUMBER} task-api:latest'
+                bat 'docker build -t gestion-tareas-api:%BUILD_NUMBER% .'
+                bat 'docker tag gestion-tareas-api:%BUILD_NUMBER% gestion-tareas-api:latest'
             }
         }
     }
@@ -42,12 +42,11 @@ pipeline {
         }
         always {
             echo 'Generando reporte...'
-            sh 'mkdir -p reports'
-            sh 'echo "Build Number: ${BUILD_NUMBER}" > reports/build-info.txt'
-            sh 'echo "Build Status: ${currentBuild.result}" >> reports/build-info.txt'
-            sh 'echo "Build URL: ${BUILD_URL}" >> reports/build-info.txt'
+            bat 'mkdir reports 2>nul || echo "Directorio ya existe"'
+            bat 'echo Build Number: %BUILD_NUMBER% > reports\\build-info.txt'
+            bat 'echo Build Status: %currentBuild.result% >> reports\\build-info.txt'
+            bat 'echo Build URL: %BUILD_URL% >> reports\\build-info.txt'
             archiveArtifacts artifacts: 'reports/*', fingerprint: true
         }
     }
 }
-
