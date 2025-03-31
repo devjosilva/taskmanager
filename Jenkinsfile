@@ -41,30 +41,27 @@ pipeline {
         
         stage('Run Docker Container') {
             steps {
-                // Detener contenedor existente si existe
-                bat 'docker stop gestion-tareas-api || echo "No hay contenedor para detener"'
-                
-                // Eliminar contenedor existente si existe
-                bat 'docker rm gestion-tareas-api || echo "No hay contenedor para eliminar"'
-                
-                // Ejecutar nuevo contenedor
-                bat 'docker run -d -p 3000:3000 --name gestion-tareas-api gestion-tareas-api:%BUILD_NUMBER%'
-                
-                // Esperar a que el contenedor esté listo
-                bat 'timeout /t 5'
-                
-                // Verificar que el contenedor está en ejecución
-                bat 'docker ps | findstr gestion-tareas-api || (echo "El contenedor no está en ejecución" && exit 1)'
+                script {
+                    // Detener y eliminar contenedor existente si existe
+                    bat 'docker stop gestion-tareas-api || echo "No hay contenedor para detener"'
+                    bat 'docker rm gestion-tareas-api || echo "No hay contenedor para eliminar"'
+                    
+                    // Ejecutar el nuevo contenedor
+                    bat 'docker run -d -p 3000:3000 --name gestion-tareas-api gestion-tareas-api:%BUILD_NUMBER%'
+                }
             }
         }
         
         stage('Verify Docker Container') {
             steps {
+                // Esperar a que el contenedor esté listo
+                bat 'timeout /t 5'
+                
                 // Mostrar logs del contenedor
                 bat 'docker logs gestion-tareas-api'
                 
                 // Verificar el estado del contenedor
-                bat 'docker ps -a | findstr gestion-tareas-api'
+                bat 'docker ps | findstr gestion-tareas-api'
             }
         }
     }
