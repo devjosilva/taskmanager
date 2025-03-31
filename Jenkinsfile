@@ -29,6 +29,7 @@ pipeline {
             steps {
                 bat 'docker build -t gestion-tareas-api:%BUILD_NUMBER% .'
                 bat 'docker tag gestion-tareas-api:%BUILD_NUMBER% gestion-tareas-api:latest'
+                bat 'docker run -p 3000:3000 task-api'
             }
         }
     }
