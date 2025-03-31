@@ -12,15 +12,6 @@ RUN npm install --production
 COPY package-lock.json ./
 RUN npm install --production
 # Copy .env file if it exists
-#COPY .env ./
-# Install additional dependencies if needed
-# RUN npm install <additional-dependency>
-# Copy the rest of the application code
-# COPY . .
-# Install additional dependencies if needed
-# RUN npm install <additional-dependency>
-# Install additional dependencies if needed
-
 
 # Copy application code
 COPY . .
