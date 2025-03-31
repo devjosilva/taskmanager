@@ -42,6 +42,7 @@ pipeline {
         }
         always {
             echo 'Generando reporte...'
+            bat 'if not exist reports mkdir reports'
             bat 'echo Build Number: %BUILD_NUMBER% > reports\\build-info.txt'
             bat 'echo Build Status: %currentBuild.result% >> reports\\build-info.txt'
             bat 'echo Build URL: %BUILD_URL% >> reports\\build-info.txt'
