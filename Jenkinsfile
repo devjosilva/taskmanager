@@ -27,8 +27,8 @@ pipeline {
         
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t gestion-tareas-api:${BUILD_NUMBER} .'
-                sh 'docker tag gestion-tareas-api:${BUILD_NUMBER} gestion-tareas-api:latest'
+                sh 'docker build -t task-api:${BUILD_NUMBER} .'
+                sh 'docker tag task-api:${BUILD_NUMBER} task-api:latest'
             }
         }
     }
