@@ -50,10 +50,6 @@ pipeline {
                     echo "Intentando ejecutar el contenedor Docker..."
                     docker run -d --name gestion-tareas-api -p 3000:3000 gestion-tareas-api:latest
                 '''
-                
-                // Esperar a que el contenedor esté listo
-                bat 'timeout /t 5'
-                
                 // Verificar que el contenedor está en ejecución
                 bat '''
                     echo "Verificando estado del contenedor..."
