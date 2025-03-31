@@ -17,6 +17,7 @@ let tasks = [
   { id: 3, title: 'Implementar CI/CD', completed: false }
 ];
 
+
 // Rutas
 app.get('/tasks', (req, res) => {
   res.json(tasks);
