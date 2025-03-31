@@ -46,21 +46,15 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Detener y eliminar el contenedor existente si existe
                     bat '''
                         docker stop gestion-tareas-api || echo "No hay contenedor para detener"
                         docker rm gestion-tareas-api || echo "No hay contenedor para eliminar"
+                        docker run -d --name gestion-tareas-api -p 3000:3000 gestion-tareas-api:latest
                     '''
-                    
-                    // Ejecutar el nuevo contenedor usando el plugin Docker
-                    docker.image("gestion-tareas-api:${env.BUILD_NUMBER}").run('-p 3000:3000 --name gestion-tareas-api')
-                    
-                    // Esperar a que el contenedor esté listo
-                    bat 'timeout /t 10'
                 }
             }
         }
-        
+
         stage('Verify Docker Container') {
             steps {
                 script {
