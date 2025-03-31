@@ -20,11 +20,14 @@ Este documento detalla los pasos realizados para implementar un sistema de integ
 - Se creó un Dockerfile para contenerizar la aplicación
 - Se configuró la aplicación para ejecutarse en el puerto 3000
 - Se probó la construcción y ejecución de la imagen localmente
+- Docker para windows debe estar en ejecución
 
    
 
 3. **Jenkins Configuration**  
      
+  - El usuario que ejecuta el servicio de Jenkins debe tener permisos para acceder al Docker Engine
+  - opcionalmente Jenkins puede tener instalado el plugin "Docker Pipeline" para una integración más robusta
   - Se creó un Jenkinsfile con las etapas del pipeline:
   - Checkout del código
   - Instalación de dependencias
